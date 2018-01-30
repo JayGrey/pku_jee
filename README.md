@@ -1,1 +1,1 @@
-# pku_jee
+Homeworks for prog.kiev.ua, jee course
