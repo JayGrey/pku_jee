@@ -5,13 +5,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) {
+public class Sorter {
 
-
-    }
-
-    private static <T> void sortByField(List<T> coll, String fieldName) {
+    public static <T> void sortByField(List<T> coll, String fieldName) {
         if (coll == null || coll.size() == 0 || fieldName == null) {
             return;
         }
@@ -51,8 +47,7 @@ public class Main {
         return result;
     }
 
-    static Comparator makeComparator(Class<?> aClass,
-                                             String fieldName) {
+    static Comparator makeComparator(Class<?> aClass, String fieldName) {
         return (o1, o2) -> {
             try {
 
@@ -61,9 +56,18 @@ public class Main {
                 }
 
                 Field field1 = o1.getClass().getDeclaredField(fieldName);
+                boolean o1Accessible = field1.isAccessible();
+                field1.setAccessible(true);
+                Comparable value1 = (Comparable) field1.get(o1);
+                field1.setAccessible(o1Accessible);
+
                 Field field2 = o2.getClass().getDeclaredField(fieldName);
-                Comparable value = (Comparable) field1.get(o1);
-                return value.compareTo(field2.get(o2));
+                boolean o2Accessible = field2.isAccessible();
+                field2.setAccessible(true);
+                Comparable value2 = (Comparable) field2.get(o2);
+                field2.setAccessible(o2Accessible);
+
+                return value1.compareTo(value2);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new IllegalArgumentException(e);
             }
