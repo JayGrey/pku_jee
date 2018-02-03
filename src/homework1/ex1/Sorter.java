@@ -6,32 +6,33 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Sorter {
-
-    public static <T> void sortByField(List<T> collection, String fieldName) {
+interface Sorter {
+    static <T> void sortByField(List<T> collection, String fieldName) {
         if (collection == null || collection.size() == 0 || fieldName == null) {
             return;
         }
 
-        List<String> sortableFields = getSortableFields(collection.get(0));
+        List<String> sortableFields = getSortableFieldsByObject(collection.get(0));
         if (!sortableFields.contains(fieldName)) {
             throw new IllegalArgumentException("field not found: " + fieldName);
         }
-
 
         collection.sort(getComparator(fieldName));
 
     }
 
 
-    static List<String> getSortableFields(Object object) {
-        return Arrays.stream(object.getClass().getDeclaredFields())
+    static List<String> getSortableFieldsByObject(Object object) {
+        return getSortableFieldsByClass(object.getClass());
+    }
+
+    static List<String> getSortableFieldsByClass(Class<?> clazz) {
+        return Arrays.stream(clazz.getDeclaredFields())
                 .filter(f -> Arrays.stream(f.getType().getInterfaces())
                         .anyMatch(i -> i == Comparable.class) ||
                         f.getType().isPrimitive())
                 .map(Field::getName)
                 .collect(Collectors.toList());
-
     }
 
     static <T extends Comparable<T>> Comparator getComparator(String fieldName) {

@@ -67,7 +67,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testPublicPrimitiveField() {
-        List<String> fields = Sorter.getSortableFields(new ClassPubPF(0));
+        List<String> fields = Sorter.getSortableFieldsByObject(new ClassPubPF(0));
 
         assertEquals(1, fields.size());
         assertEquals("field1", fields.get(0));
@@ -94,7 +94,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testPrivatePrimitiveField() {
-        List<String> fields = Sorter.getSortableFields(new ClassPrPF(0));
+        List<String> fields = Sorter.getSortableFieldsByObject(new ClassPrPF(0));
 
         assertEquals(1, fields.size());
         assertEquals("field1", fields.get(0));
@@ -121,7 +121,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testPublicReferenceField() {
-        List<String> fields = Sorter.getSortableFields(new ClassRefF("hello"));
+        List<String> fields = Sorter.getSortableFieldsByObject(new ClassRefF("hello"));
 
         assertEquals(1, fields.size());
         assertEquals("field1", fields.get(0));
@@ -147,7 +147,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testPrivateReferenceField() {
-        List<String> fields = Sorter.getSortableFields(new ClassRefPrF
+        List<String> fields = Sorter.getSortableFieldsByObject(new ClassRefPrF
                 ("hello"));
 
         assertEquals(1, fields.size());
