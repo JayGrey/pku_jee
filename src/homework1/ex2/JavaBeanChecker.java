@@ -25,29 +25,31 @@ public class JavaBeanChecker {
                 .allMatch(f -> hasAccessor(clazz, f) && hasMutator(clazz, f));
     }
 
+    private boolean isSerializable(Class<?> clazz) {
+        return Arrays.stream(clazz.getInterfaces())
+                .anyMatch(c -> c == Serializable.class);
+    }
+
     private boolean hasAccessor(Class<?> clazz, Field field) {
         try {
             String methodName = buildMethodName(field.getName(), true);
             Method method = clazz.getMethod(methodName);
-            return method.getReturnType() == field.getType();
+            return method.isAccessible()
+                    && method.getReturnType() == field.getType();
         } catch (NoSuchMethodException e) {
             return false;
         }
     }
 
     private boolean hasMutator(Class<?> clazz, Field field) {
-        //todo: check method name like set<FieldName>
-        //todo: check that method has one argument with type equal to field type
-        //todo: check that return value is void
-        String methodName = buildMethodName(field.getName(), false);
-
-
-        return false;
-    }
-
-    private boolean isSerializable(Class<?> clazz) {
-        return Arrays.stream(clazz.getInterfaces())
-                .anyMatch(c -> c == Serializable.class);
+        try {
+            String methodName = buildMethodName(field.getName(), false);
+            Method method = clazz.getMethod(methodName, field.getType());
+            return method.isAccessible()
+                    && method.getReturnType() == Void.class;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
     }
 
     private String buildMethodName(String fieldName, boolean isMethodAccessor) {
