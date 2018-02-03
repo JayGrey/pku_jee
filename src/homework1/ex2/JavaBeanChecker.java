@@ -1,37 +1,45 @@
 package homework1.ex2;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+
 public class JavaBeanChecker {
     public boolean check(Class<?> clazz) {
-        return meetFirstRequirement(clazz) &&
-                meetSecondRequirement(clazz) &&
-                meetThirdRequirement(clazz);
+        return hasDefaultConstructor(clazz) &&
+                hasFieldsAccessors(clazz) &&
+                isSerializable(clazz);
     }
 
-    /**
-     * Check that this class has default constructor
-     * @param clazz
-     * @return
-     */
-    private boolean meetFirstRequirement(Class<?> clazz) {
+    private boolean hasDefaultConstructor(Class<?> clazz) {
+        try {
+            return clazz.getConstructor() != null;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+    }
+
+    private boolean hasFieldsAccessors(Class<?> clazz) {
+        return Arrays.stream(clazz.getDeclaredFields())
+                .allMatch(f -> hasAccessor(f) && hasMutator(f));
+    }
+
+    private boolean hasAccessor(Field field) {
+        //todo: check method name like get<FieldName>
+        //todo: check that method has no args
+        //todo: check that return value and field type is equal
         return false;
     }
 
-
-    /**
-     * Check that this class has accesible properties through get, set or is methods
-     * @param clazz
-     * @return
-     */
-    private boolean meetSecondRequirement(Class<?> clazz) {
+    private boolean hasMutator(Field field) {
+        //todo: check method name like set<FieldName>
+        //todo: check that method has one argument with type equal to field type
+        //todo: check that return value is void
         return false;
     }
 
-    /**
-     * Check that this class is  serializable.
-     * @param clazz
-     * @return boolean
-     */
-    private boolean meetThirdRequirement(Class<?> clazz) {
-        return false;
+    private boolean isSerializable(Class<?> clazz) {
+        return Arrays.stream(clazz.getInterfaces())
+                .anyMatch(c -> c == Serializable.class);
     }
 }
