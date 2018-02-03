@@ -7,18 +7,18 @@ import java.util.List;
 
 public class Sorter {
 
-    public static <T> void sortByField(List<T> coll, String fieldName) {
-        if (coll == null || coll.size() == 0 || fieldName == null) {
+    public static <T> void sortByField(List<T> collection, String fieldName) {
+        if (collection == null || collection.size() == 0 || fieldName == null) {
             return;
         }
 
-        List<String> sortableFields = getSortableFields(coll.get(0));
+        List<String> sortableFields = getSortableFields(collection.get(0));
         if (!sortableFields.contains(fieldName)) {
             throw new IllegalArgumentException("field not found: " + fieldName);
         }
 
 
-        coll.sort(makeComparator(coll.get(0).getClass(), fieldName));
+        collection.sort(makeComparator(fieldName));
 
     }
 
@@ -47,32 +47,18 @@ public class Sorter {
         return result;
     }
 
-    static Comparator makeComparator(Class<?> aClass, String fieldName) {
-        return (o1, o2) -> {
+    static <T extends Comparable<T>> Comparator makeComparator(String fieldName) {
+        return Comparator.comparing((o -> {
             try {
-
-                if (o1.getClass() != aClass || o2.getClass() != aClass) {
-                    throw new IllegalArgumentException();
-                }
-
-                Field field1 = o1.getClass().getDeclaredField(fieldName);
-                boolean o1Accessible = field1.isAccessible();
-                field1.setAccessible(true);
-                Comparable value1 = (Comparable) field1.get(o1);
-                field1.setAccessible(o1Accessible);
-
-                Field field2 = o2.getClass().getDeclaredField(fieldName);
-                boolean o2Accessible = field2.isAccessible();
-                field2.setAccessible(true);
-                Comparable value2 = (Comparable) field2.get(o2);
-                field2.setAccessible(o2Accessible);
-
-                return value1.compareTo(value2);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
+                Field field = o.getClass().getDeclaredField(fieldName);
+                boolean accessible = field.isAccessible();
+                field.setAccessible(true);
+                T value = (T) field.get(o);
+                field.setAccessible(accessible);
+                return value;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-
-        };
+        }));
     }
-
 }

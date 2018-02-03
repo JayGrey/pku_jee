@@ -76,8 +76,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testMakeComparatorForPublicPrimitiveField() {
-        Comparator<ClassPubPF> comparator = Sorter.makeComparator(
-                ClassPubPF.class, "field1");
+        Comparator<ClassPubPF> comparator = Sorter.makeComparator("field1");
 
         ClassPubPF value1 = new ClassPubPF(2);
         ClassPubPF value2 = new ClassPubPF(-1);
@@ -104,8 +103,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testMakeComparatorForPrivatePrimitiveField() {
-        Comparator<ClassPrPF> comparator = Sorter.makeComparator(
-                ClassPrPF.class, "field1");
+        Comparator<ClassPrPF> comparator = Sorter.makeComparator("field1");
 
         ClassPrPF value1 = new ClassPrPF(2);
         ClassPrPF value2 = new ClassPrPF(-1);
@@ -132,8 +130,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testMakeComparatorForPublicReferenceField() {
-        Comparator<ClassRefF> comparator = Sorter.makeComparator(
-                ClassRefF.class, "field1");
+        Comparator<ClassRefF> comparator = Sorter.makeComparator("field1");
 
         ClassRefF value1 = new ClassRefF("b");
         ClassRefF value2 = new ClassRefF("a");
@@ -160,8 +157,7 @@ public class TestHW1Ex1 {
 
     @Test
     public void testMakeComparatorForPrivateReferenceField() {
-        Comparator<ClassRefPrF> comparator = Sorter.makeComparator(
-                ClassRefPrF.class, "field1");
+        Comparator<ClassRefPrF> comparator = Sorter.makeComparator("field1");
 
         ClassRefPrF value1 = new ClassRefPrF("b");
         ClassRefPrF value2 = new ClassRefPrF("a");
