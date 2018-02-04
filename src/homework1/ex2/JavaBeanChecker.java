@@ -3,50 +3,59 @@ package homework1.ex2;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-public class JavaBeanChecker {
-    public boolean check(Class<?> clazz) {
+class JavaBeanChecker {
+    boolean check(Class<?> clazz) {
         return hasDefaultConstructor(clazz) &&
                 hasFieldsAccessors(clazz) &&
                 isSerializable(clazz);
     }
 
-    private boolean hasDefaultConstructor(Class<?> clazz) {
+    boolean hasDefaultConstructor(Class<?> clazz) {
         try {
             return clazz.getConstructor() != null;
         } catch (NoSuchMethodException e) {
-            return false;
+            try {
+                Class<?> enclosingClass = clazz.getEnclosingClass();
+                return enclosingClass != null &&
+                        clazz.getConstructor(enclosingClass) != null;
+            } catch (NoSuchMethodException err) {
+                return false;
+            }
         }
     }
 
-    private boolean hasFieldsAccessors(Class<?> clazz) {
+    boolean hasFieldsAccessors(Class<?> clazz) {
         return Arrays.stream(clazz.getDeclaredFields())
-                .allMatch(f -> hasAccessor(clazz, f) && hasMutator(clazz, f));
+                .filter(f -> !f.isSynthetic())
+                .allMatch(f -> hasGetter(clazz, f) && hasSetter(clazz, f));
     }
 
-    private boolean isSerializable(Class<?> clazz) {
+    boolean isSerializable(Class<?> clazz) {
         return Arrays.stream(clazz.getInterfaces())
                 .anyMatch(c -> c == Serializable.class);
     }
 
-    private boolean hasAccessor(Class<?> clazz, Field field) {
+    private boolean hasGetter(Class<?> clazz, Field field) {
         try {
             String methodName = buildMethodName(field.getName(), true);
             Method method = clazz.getMethod(methodName);
-            return method.isAccessible()
-                    && method.getReturnType() == field.getType();
+
+            return Modifier.isPublic(method.getModifiers())
+                    && (method.getReturnType() == field.getType());
         } catch (NoSuchMethodException e) {
             return false;
         }
     }
 
-    private boolean hasMutator(Class<?> clazz, Field field) {
+    private boolean hasSetter(Class<?> clazz, Field field) {
         try {
             String methodName = buildMethodName(field.getName(), false);
             Method method = clazz.getMethod(methodName, field.getType());
-            return method.isAccessible()
-                    && method.getReturnType() == Void.class;
+            return Modifier.isPublic(method.getModifiers())
+                    && method.getReturnType() == void.class;
         } catch (NoSuchMethodException e) {
             return false;
         }
