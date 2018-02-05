@@ -2,6 +2,7 @@ package homework1.ex3;
 
 public class Student {
     private String name;
+    @SortMePleeeez
     private int age;
     private Sex sex;
 
