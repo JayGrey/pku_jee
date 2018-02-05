@@ -6,13 +6,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-interface Sorter {
+public interface Sorter {
     static <T> void sortByField(List<T> collection, String fieldName) {
         if (collection == null || collection.size() == 0 || fieldName == null) {
             return;
         }
 
-        List<String> sortableFields = getSortableFieldsByObject(collection.get(0));
+        List<String> sortableFields = getSortableFieldsByObject(collection
+                .get(0));
         if (!sortableFields.contains(fieldName)) {
             throw new IllegalArgumentException("field not found: " + fieldName);
         }
@@ -31,6 +32,15 @@ interface Sorter {
                 .filter(f -> Arrays.stream(f.getType().getInterfaces())
                         .anyMatch(i -> i == Comparable.class) ||
                         f.getType().isPrimitive())
+                .map(Field::getName)
+                .collect(Collectors.toList());
+    }
+
+    static List<String> getAnnotatedFields(Class<?> clazz, Class<?> anno) {
+        return Arrays.stream(clazz.getDeclaredFields())
+                .filter(f -> !f.isSynthetic())
+                .filter(f -> Arrays.stream(f.getAnnotations())
+                        .anyMatch(a -> a.annotationType() == anno))
                 .map(Field::getName)
                 .collect(Collectors.toList());
     }
