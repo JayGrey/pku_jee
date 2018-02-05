@@ -19,9 +19,7 @@ public interface Sorter {
         }
 
         collection.sort(getComparator(fieldName));
-
     }
-
 
     static List<String> getSortableFieldsByObject(Object object) {
         return getSortableFieldsByClass(object.getClass());
@@ -31,7 +29,7 @@ public interface Sorter {
         return Arrays.stream(clazz.getDeclaredFields())
                 .filter(f -> Arrays.stream(f.getType().getInterfaces())
                         .anyMatch(i -> i == Comparable.class) ||
-                        f.getType().isPrimitive())
+                        f.getType().isPrimitive() || f.getType().isEnum())
                 .map(Field::getName)
                 .collect(Collectors.toList());
     }

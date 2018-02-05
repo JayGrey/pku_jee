@@ -106,21 +106,17 @@ public class TestHW1Ex3 {
     @Test
     public void testSortingEnumField() {
         class Cl {
-            private int field1;
-            private String field2;
             @SortMePleeeez
             private Sex field3;
 
-            public Cl(int field1, String field2, Sex field3) {
-                this.field1 = field1;
-                this.field2 = field2;
+            public Cl(Sex field3) {
                 this.field3 = field3;
             }
         }
 
         List<Cl> list = Arrays.asList(
-                new Cl(3, "b", Sex.MALE),
-                new Cl(2, "a", Sex.FEMALE)
+                new Cl(Sex.MALE),
+                new Cl(Sex.FEMALE)
         );
 
         AnnotatedSorter sorter = new AnnotatedSorter();
