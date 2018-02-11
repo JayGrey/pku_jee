@@ -28,10 +28,18 @@ public class ApartmentsRetail {
         apartments.remove(apartment);
     }
 
-    public List<Apartment> filter(Predicate<Apartment> func) {
+    List<Apartment> filter(Predicate<Apartment> func) {
         return apartments.stream()
                 .filter(func)
                 .collect(Collectors.toList());
+    }
+
+    public List<Apartment> getApartmentsByPriceRange(double from, double to) {
+        return filter(a -> a.getPrice() >= from && a.getPrice() <= to);
+    }
+
+    public List<Apartment> getApartmentsByRoomsRange(int from, int to) {
+        return filter(a -> a.getRooms() >= from && a.getRooms() <= to);
     }
 
     @Override
