@@ -2,7 +2,8 @@ package homework2.ex1;
 
 public interface ApartmentsDAO {
 
-    ApartmentsRetail load(String filename);
+    RealEstate load(String filename);
 
-    void save(ApartmentsRetail collection, String filename);
+    void save(RealEstate realEstate, String filename);
+
 }

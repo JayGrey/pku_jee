@@ -8,12 +8,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
 public class XMLApartmentsDAO implements ApartmentsDAO {
+
     @Override
-    public ApartmentsRetail load(String filename) {
+    public RealEstate load(String filename) {
+
         try {
-            return (ApartmentsRetail) JAXBContext
-                    .newInstance(ApartmentsRetail.class)
+            return (RealEstate) JAXBContext
+                    .newInstance(RealEstate.class)
                     .createUnmarshaller()
                     .unmarshal(new FileReader(filename));
         } catch (JAXBException | FileNotFoundException e) {
@@ -22,15 +25,16 @@ public class XMLApartmentsDAO implements ApartmentsDAO {
     }
 
     @Override
-    public void save(ApartmentsRetail retail, String filename) {
+    public void save(RealEstate realEstate, String filename) {
+
         try {
 
             Marshaller marshaller = JAXBContext
-                    .newInstance(ApartmentsRetail.class)
+                    .newInstance(RealEstate.class)
                     .createMarshaller();
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(retail, new FileWriter(filename));
+            marshaller.marshal(realEstate, new FileWriter(filename));
         } catch (JAXBException | IOException e) {
             throw new RuntimeException(e);
         }
