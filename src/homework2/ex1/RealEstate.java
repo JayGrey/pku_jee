@@ -62,6 +62,10 @@ public class RealEstate {
         apartments.remove(apartment);
     }
 
+    public int size() {
+        return apartments.size();
+    }
+
 
     private void checkNull(Object object, Object... objects) {
         if (object == null) {
