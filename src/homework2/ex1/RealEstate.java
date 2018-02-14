@@ -3,11 +3,11 @@ package homework2.ex1;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @XmlRootElement(name = "apartments")
 public class RealEstate {
@@ -32,10 +32,12 @@ public class RealEstate {
     }
 
     public List<Apartment> getApartmentsByPriceRange(double from, double to) {
+        checkPositive(from, to);
         return get(a -> a.getPrice() >= from && a.getPrice() <= to);
     }
 
     public List<Apartment> getApartmentsByRoomsRange(int from, int to) {
+        checkPositive(from, to);
         return get(a -> a.getRooms() >= from && a.getRooms() <= to);
     }
 
@@ -68,16 +70,22 @@ public class RealEstate {
 
 
     private void checkNull(Object object, Object... objects) {
-        if (object == null) {
+        
+        if (Stream.concat(Stream.of(object), Stream.of(objects))
+                .anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("argument is null");
         }
 
-        Arrays.stream(objects)
-                .filter(Objects::isNull)
-                .findFirst()
-                .ifPresent(o -> {
-                    throw new IllegalArgumentException("argument is null");
-                });
     }
 
+    private void checkPositive(Number number, Number... numbers) {
+
+        Stream.concat(Stream.of(number), Stream.of(numbers))
+                .mapToLong(Number::longValue)
+                .filter(n -> n < 0)
+                .findAny()
+                .ifPresent(n -> {
+                    throw new IllegalArgumentException("argument is negative");
+                });
+    }
 }
